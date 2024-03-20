@@ -1,45 +1,44 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-export default function LetterBox(props) {
-  const { team } = props;
+export default function LetterBox({ team, tries, setTries, setIncorrectLetters, resetInputs }) {
 
   const newTeamWhSpace = team.replace(/\s/g, "");
   const arrayLetters = newTeamWhSpace.split("");
 
-  const [inputValues, setInputValues] = useState(arrayLetters.map(() => ""));
+  const [inputValues, setInputValues] = useState(Array(arrayLetters.length).fill(""));
+  const [expectedLetter, setExpectedLetter] = useState("");
+  const [currentLetter, setCurrentLetter] = useState("");
+  
+  useEffect(() => {
+    setInputValues(Array(arrayLetters.length).fill(""));
+  },[resetInputs, arrayLetters.length]);
 
-  // Función para manejar el cambio en el input
   const handleInputChange = (index, event) => {
-    // Valor ingresado en el input
     const value = event.target.value.toLowerCase();
-
-    // Crear una copia del arreglo de valores de inputs actual para mantener inmutabilidad del estado en React
     const newInputValues = [...inputValues];
-
-    // Actualizar el valor correspondiente al input actual
     newInputValues[index] = value;
-
-    // Actualizar el estado con los nuevos valores de los inputs
     setInputValues(newInputValues);
-
-    // Verifica si el valor ingresado coincide con la letra correspondiente en el array
+    setCurrentLetter(value);
+    setExpectedLetter(arrayLetters[index]);
+    
     if (value === arrayLetters[index]) {
-      // Si coincide, enfocará al siguiente input si este existe
       if (index < arrayLetters.length - 1) {
-        const nextInput =
-          event.target.parentElement.nextElementSibling.querySelector("input");
+        const nextInput = event.target.parentElement.nextElementSibling.querySelector("input");
         if (nextInput) {
           nextInput.focus();
         }
       }
-    }     
+    } else if (value !== "") { 
+      setTries(tries + 1); 
+      setIncorrectLetters((prevIncorrectLetters) => [...prevIncorrectLetters, value]);
+    }
   };
 
-  const letterBoxes = arrayLetters.map((e, index) => (
+  const letterBoxes = arrayLetters.map((letter, index) => (
     <div className="letter-box" key={index}>
       <input
-        className={`input${index}${e}`}
+        className={`input${index}${letter}`}
         type="text"
         maxLength="1"
         value={inputValues[index]}
@@ -52,5 +51,9 @@ export default function LetterBox(props) {
 }
 
 LetterBox.propTypes = {
-  team: PropTypes.string.isRequired
+  team: PropTypes.string.isRequired,
+  tries: PropTypes.number.isRequired,
+  setTries: PropTypes.func.isRequired,
+  setIncorrectLetters: PropTypes.func.isRequired,
+  resetInputs: PropTypes.bool.isRequired,
 };

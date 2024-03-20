@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import LogoGame from "./assets/Word-Scramblle.svg";
 import GuessWord from "./components/GuessWord";
 import Tried from "./components/Tried";
@@ -16,33 +17,65 @@ function App() {
     "ac milan",
   ];
 
-  // Obtain a random team
-  const ramdonIndex = arrSoccerTeam[Math.floor(Math.random() * arrSoccerTeam.length)];
+  const [randomTeamIndex, setRandomTeamIndex] = useState(
+    Math.floor(Math.random() * arrSoccerTeam.length)
+  );
 
-  // Events to buttons
-  const ramdonClick = () => {
-    alert("Ramdon");
+  const [incorrectLetters, setIncorrectLetters] = useState([]);
+
+  const [resetInputs, setResetInputs] = useState(false);
+
+  const randomTeam = arrSoccerTeam[randomTeamIndex];
+
+  const hR = () => {
+    setResetInputs(true);
+    setTimeout(() => {
+      setResetInputs(false);
+    }, 0);
+  };
+
+  const restartGame = () => {
+    setTimeout(() => {
+      alert("you lose");
+      hR();
+      setTries(0);
+      setIncorrectLetters([]);
+    }, 0);
+  };
+
+  const randomClick = () => {
+    alert("Random");
   };
 
   const resetClick = () => {
-    alert("Reset");
+    restartGame();
   };
+
+  // Paso como props
+  const [tries, setTries] = useState(0);
 
   return (
     <div className="game-container">
       <img src={LogoGame} alt="logo guess game" />
-      <GuessWord team={ramdonIndex} />
+      <GuessWord team={randomTeam} />
       <div className="counter-container">
-        <Tried />
-        <Mistake />
+        <Tried tries={tries} />
+        <Mistake incorrectLetters={incorrectLetters} />
       </div>
       <div className="memory-words-container">
-        <LetterBox team={ramdonIndex} />
+        <LetterBox
+          team={randomTeam}
+          tries={tries}
+          setTries={setTries}
+          setIncorrectLetters={setIncorrectLetters}
+          resetInputs={resetInputs}
+        />
       </div>
       <div className="button-container">
-        <Button text="Ramdon" onClick={ramdonClick} />
-        <Button text="Reset" onClick={resetClick} />
+        <Button text="Random" onClick={randomClick} />
+        <Button text="Reset" onClick={restartGame} />
       </div>
+      {tries === 5 ? restartGame() : null}
     </div>
   );
 }

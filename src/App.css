@@ -66,8 +66,15 @@ button {
   width: 30%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
+}
+
+.tried-points-container{
+  width: 40%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .tried-point {
@@ -75,6 +82,14 @@ button {
   height: 8px;
   background-color: var(--grey-color);
   border-radius: 100%;
+}
+
+.isPainted{
+  background-color: var(--grey-color);
+}
+
+.painted{
+  background-color: var(--lile-color);
 }
 
 .mistake-container {
