@@ -47,10 +47,6 @@ function App() {
     alert("Random");
   };
 
-  const resetClick = () => {
-    restartGame();
-  };
-
   // Paso como props
   const [tries, setTries] = useState(0);
 
