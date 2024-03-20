@@ -1,18 +1,28 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 
-export default function LetterBox({ team, tries, setTries, setIncorrectLetters, resetInputs }) {
-
+export default function LetterBox({ team, tries, setTries, setIncorrectLetters, resetInputs, restartGame }) {
   const newTeamWhSpace = team.replace(/\s/g, "");
   const arrayLetters = newTeamWhSpace.split("");
 
   const [inputValues, setInputValues] = useState(Array(arrayLetters.length).fill(""));
   const [expectedLetter, setExpectedLetter] = useState("");
   const [currentLetter, setCurrentLetter] = useState("");
-  
+  const firstInputRef = useRef(null); // Referencia al primer input
+
   useEffect(() => {
+    // Reiniciar los valores de los inputs cuando se llame la función resetInputs
     setInputValues(Array(arrayLetters.length).fill(""));
-  },[resetInputs, arrayLetters.length]);
+    if (firstInputRef.current) {
+      firstInputRef.current.focus(); // Enfocar el primer input
+    }
+  }, [resetInputs, arrayLetters.length]);
+
+  useEffect(() => {
+    if (tries === 5) {
+      restartGame(); // Llama a la función para reiniciar el juego cuando se alcancen los 5 intentos
+    }
+  }, [tries, restartGame]);
 
   const handleInputChange = (index, event) => {
     const value = event.target.value.toLowerCase();
@@ -28,9 +38,13 @@ export default function LetterBox({ team, tries, setTries, setIncorrectLetters, 
         if (nextInput) {
           nextInput.focus();
         }
+      }else{
+        setTimeout(() => {
+          alert("You win");
+        },0)
       }
-    } else if (value !== "") { 
-      setTries(tries + 1); 
+    } else if (value !== "") {
+      setTries(tries + 1);
       setIncorrectLetters((prevIncorrectLetters) => [...prevIncorrectLetters, value]);
     }
   };
@@ -38,6 +52,7 @@ export default function LetterBox({ team, tries, setTries, setIncorrectLetters, 
   const letterBoxes = arrayLetters.map((letter, index) => (
     <div className="letter-box" key={index}>
       <input
+        ref={index === 0 ? firstInputRef : null} // Asigna la referencia al primer input
         className={`input${index}${letter}`}
         type="text"
         maxLength="1"
@@ -55,5 +70,6 @@ LetterBox.propTypes = {
   tries: PropTypes.number.isRequired,
   setTries: PropTypes.func.isRequired,
   setIncorrectLetters: PropTypes.func.isRequired,
-  resetInputs: PropTypes.bool.isRequired,
+  resetInputs: PropTypes.bool.isRequired,  
+  restartGame: PropTypes.func.isRequired,  
 };

@@ -22,32 +22,51 @@ function App() {
   );
 
   const [incorrectLetters, setIncorrectLetters] = useState([]);
-
   const [resetInputs, setResetInputs] = useState(false);
+  const [showWinAlert, setShowWinAlert] = useState(false);
 
   const randomTeam = arrSoccerTeam[randomTeamIndex];
 
-  const hR = () => {
+  const handleResetGame = () => {
     setResetInputs(true);
     setTimeout(() => {
       setResetInputs(false);
     }, 0);
   };
 
-  const restartGame = () => {
+  const loseGame = () => {
+    setShowWinAlert(false);
     setTimeout(() => {
-      alert("you lose");
-      hR();
+      alert("¡Perdiste!");
+      handleResetGame();
       setTries(0);
       setIncorrectLetters([]);
     }, 0);
   };
 
-  const randomClick = () => {
-    alert("Random");
+  const restarGame = () => {
+    setShowWinAlert(false);
+    handleResetGame();
+    setTries(0);
+    setIncorrectLetters([]);
+  }
+
+  const handleShowWinAlert = (value) => {
+    setShowWinAlert(value);
   };
 
-  // Paso como props
+  const handleRandomTeam = () => {
+    const newIndex = Math.floor(Math.random() * arrSoccerTeam.length);
+    setRandomTeamIndex(newIndex);
+    handleResetGame(); // Restablecer el juego al cambiar de equipo
+    setTries(0); // Reiniciar el número de intentos
+    setIncorrectLetters([]); // Reiniciar las letras incorrectas
+  };
+
+  const randomClick = () => {
+    handleRandomTeam(); // Llamar a la función para seleccionar un nuevo equipo aleatorio
+  };
+
   const [tries, setTries] = useState(0);
 
   return (
@@ -65,13 +84,15 @@ function App() {
           setTries={setTries}
           setIncorrectLetters={setIncorrectLetters}
           resetInputs={resetInputs}
+          restartGame={loseGame}
+          showAlert={handleShowWinAlert}
         />
       </div>
       <div className="button-container">
         <Button text="Random" onClick={randomClick} />
-        <Button text="Reset" onClick={restartGame} />
+        <Button text="Reset" onClick={restarGame} />
       </div>
-      {tries === 5 ? restartGame() : null}
+      {showWinAlert && <div className="alert">¡Ganaste!</div>}
     </div>
   );
 }
