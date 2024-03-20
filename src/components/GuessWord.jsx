@@ -1,16 +1,15 @@
-/* eslint-disable react/prop-types */
-export default function GuessWord(props) {
-  const messUpCharacters = (character) => {
-    return character
-      .split("")
-      .sort(() => Math.random() - 0.5)
-      .join("");
-  };
+import PropTypes from "prop-types";
 
+const messUpCharacters = (character) => {
+  return character
+    .split("")
+    .sort(() => Math.random() - 0.5)
+    .join("");
+};
+
+export default function GuessWord(props) {
   const { team } = props;
   const newTeamWhSpace = team.replace(/\s/g, "");
-
-  console.log(team);
 
   return (
     <div className="guess-container">
@@ -18,3 +17,7 @@ export default function GuessWord(props) {
     </div>
   );
 }
+
+GuessWord.propTypes = {
+  team: PropTypes.string.isRequired,
+};

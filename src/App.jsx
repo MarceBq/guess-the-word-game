@@ -1,10 +1,10 @@
-// App.js
 import LogoGame from "./assets/Word-Scramblle.svg";
 import GuessWord from "./components/GuessWord";
 import Tried from "./components/Tried";
 import Mistake from "./components/Mistake";
 import LetterBox from "./components/LetterBox";
 import Button from "./components/Button";
+
 import "./App.css";
 
 function App() {
@@ -16,8 +16,8 @@ function App() {
     "ac milan",
   ];
 
-  const ramdonIndex =
-    arrSoccerTeam[Math.floor(Math.random() * arrSoccerTeam.length)];
+  // Obtain a random team
+  const ramdonIndex = arrSoccerTeam[Math.floor(Math.random() * arrSoccerTeam.length)];
 
   // Events to buttons
   const ramdonClick = () => {
